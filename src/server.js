@@ -1,6 +1,7 @@
 const app = require('./app');
 const config = require('./config/env');
 const db = require('./models/db');
+const { closeQueues } = require('./queues');
 const { ensureLogDirectory } = require('./utils/auditLogger');
 
 const server = app.listen(config.port, () => {
@@ -21,7 +22,7 @@ async function shutdown(signal) {
   shuttingDown = true;
   console.log(`[web] ${signal} received, shutting down`);
   server.close();
-  await db.close().catch(() => {});
+  await Promise.allSettled([db.close(), closeQueues()]);
   process.exit(0);
 }
 
