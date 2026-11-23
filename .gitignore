@@ -1,0 +1,16 @@
+# Dependencies
+node_modules
+
+# Secrets - only .env.example is committed
+.env
+
+# Generated at runtime
+logs/
+coverage/
+*.log
+
+# OS / editor noise
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/
