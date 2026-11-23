@@ -5,7 +5,9 @@
   "private": true,
   "main": "src/server.js",
   "scripts": {
-    "start": "node src/server.js",
+    "start": "node scripts/start.js",
+    "start:web": "node src/server.js",
+    "start:worker": "node src/worker.js",
     "test": "jest"
   },
   "engines": {
