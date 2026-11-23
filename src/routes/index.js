@@ -4,6 +4,7 @@ const doctorRoutes = require('./doctorRoutes');
 const appointmentRoutes = require('./appointmentRoutes');
 const waitlistRoutes = require('./waitlistRoutes');
 const reportRoutes = require('./reportRoutes');
+const feedbackRoutes = require('./feedbackRoutes');
 
 const router = Router();
 
@@ -14,5 +15,6 @@ router.use('/api/doctors', doctorRoutes);
 router.use('/api/appointments', appointmentRoutes);
 router.use('/api/waitlist', waitlistRoutes);
 router.use('/api/reports', reportRoutes);
+router.use('/feedback', feedbackRoutes);
 
 module.exports = router;

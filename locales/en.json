@@ -1,0 +1,20 @@
+{
+  "locale": "en-GB",
+  "languageName": "English",
+  "title": "Course Feedback",
+  "instructions": "Please answer each of the five questions below in a few sentences. Your answers are anonymous and help us improve the course for future students.",
+  "dateLabel": "Date",
+  "languageLabel": "Language",
+  "questions": [
+    "Which topic in this course did you find most challenging, and why?",
+    "Describe one concept you understood only after the practical assignments. What made it click?",
+    "How has your approach to designing databases or APIs changed since the start of the trimester?",
+    "What would you improve about how this course was taught or assessed?",
+    "How do you plan to apply what you learned in this course going forward?"
+  ],
+  "answerPlaceholder": "Write your answer here",
+  "submit": "Send feedback",
+  "thankYouTitle": "Feedback sent",
+  "thankYou": "Thank you. Your feedback has been received.",
+  "backToForm": "Back to the form"
+}

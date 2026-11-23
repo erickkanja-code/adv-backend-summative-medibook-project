@@ -1,0 +1,20 @@
+{
+  "locale": "fr-FR",
+  "languageName": "Français",
+  "title": "Évaluation du cours",
+  "instructions": "Veuillez répondre à chacune des cinq questions ci-dessous en quelques phrases. Vos réponses sont anonymes et nous aident à améliorer le cours pour les futurs étudiants.",
+  "dateLabel": "Date",
+  "languageLabel": "Langue",
+  "questions": [
+    "Quel sujet de ce cours avez-vous trouvé le plus difficile, et pourquoi ?",
+    "Décrivez une notion que vous n’avez comprise qu’après les travaux pratiques. Qu’est-ce qui vous a permis de la comprendre ?",
+    "Comment votre façon de concevoir des bases de données ou des API a-t-elle évolué depuis le début du trimestre ?",
+    "Qu’amélioreriez-vous dans la manière dont ce cours a été enseigné ou évalué ?",
+    "Comment comptez-vous appliquer à l’avenir ce que vous avez appris dans ce cours ?"
+  ],
+  "answerPlaceholder": "Écrivez votre réponse ici",
+  "submit": "Envoyer l’évaluation",
+  "thankYouTitle": "Évaluation envoyée",
+  "thankYou": "Merci. Votre évaluation a bien été reçue.",
+  "backToForm": "Retour au formulaire"
+}
