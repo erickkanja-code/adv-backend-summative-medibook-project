@@ -1,0 +1,48 @@
+digraph medibook {
+  graph [rankdir=LR, splines=true, nodesep=0.8, ranksep=2.2, pad=0.4, bgcolor="white", fontname="Helvetica", label=<<B>MediBook - database schema (3NF, MySQL 8)</B><BR/><FONT POINT-SIZE="11">PK = primary key   FK = foreign key   UQ = unique   NN = NOT NULL   CHK = CHECK   GEN = generated column</FONT>>, labelloc=t, fontsize=18];
+  node [shape=plaintext, fontname="Helvetica", fontsize=11];
+  edge [fontname="Helvetica", fontsize=11, color="#33525f", penwidth=1.6];
+
+  patients [label=<
+  <TABLE BORDER="1" CELLBORDER="0" CELLSPACING="0" CELLPADDING="5" COLOR="#33525f">
+    <TR><TD COLSPAN="3" BGCOLOR="#0f6e78"><FONT COLOR="white"><B>patients</B></FONT></TD></TR>
+    <TR><TD ALIGN="LEFT"><B>id</B></TD><TD ALIGN="LEFT">INT UNSIGNED</TD><TD ALIGN="LEFT" PORT="id"><B>PK</B>, AUTO_INCREMENT</TD></TR>
+    <TR><TD ALIGN="LEFT">full_name</TD><TD ALIGN="LEFT">VARCHAR(100)</TD><TD ALIGN="LEFT">NN</TD></TR>
+    <TR><TD ALIGN="LEFT">email</TD><TD ALIGN="LEFT">VARCHAR(255)</TD><TD ALIGN="LEFT">NN, <B>UQ</B></TD></TR>
+    <TR><TD ALIGN="LEFT">phone</TD><TD ALIGN="LEFT">VARCHAR(20)</TD><TD ALIGN="LEFT">NN</TD></TR>
+    <TR><TD ALIGN="LEFT">created_at</TD><TD ALIGN="LEFT">DATETIME</TD><TD ALIGN="LEFT">NN, DEFAULT NOW</TD></TR>
+    <TR><TD COLSPAN="3" ALIGN="LEFT" BGCOLOR="#eef4f6"><FONT POINT-SIZE="10">CHK chk_patients_full_name: CHAR_LENGTH(TRIM(full_name)) &gt;= 2<BR ALIGN="LEFT"/>CHK chk_patients_email: email LIKE '%_@_%._%'<BR ALIGN="LEFT"/>CHK chk_patients_phone: CHAR_LENGTH(phone) &gt;= 7<BR ALIGN="LEFT"/></FONT></TD></TR>
+  </TABLE>>];
+
+  doctors [label=<
+  <TABLE BORDER="1" CELLBORDER="0" CELLSPACING="0" CELLPADDING="5" COLOR="#33525f">
+    <TR><TD COLSPAN="3" BGCOLOR="#0f6e78"><FONT COLOR="white"><B>doctors</B></FONT></TD></TR>
+    <TR><TD ALIGN="LEFT"><B>id</B></TD><TD ALIGN="LEFT">INT UNSIGNED</TD><TD ALIGN="LEFT" PORT="id"><B>PK</B>, AUTO_INCREMENT</TD></TR>
+    <TR><TD ALIGN="LEFT">full_name</TD><TD ALIGN="LEFT">VARCHAR(100)</TD><TD ALIGN="LEFT">NN</TD></TR>
+    <TR><TD ALIGN="LEFT">specialty</TD><TD ALIGN="LEFT">VARCHAR(100)</TD><TD ALIGN="LEFT">NN</TD></TR>
+    <TR><TD ALIGN="LEFT">consultation_fee</TD><TD ALIGN="LEFT">DECIMAL(10,2)</TD><TD ALIGN="LEFT">NN</TD></TR>
+    <TR><TD ALIGN="LEFT">room</TD><TD ALIGN="LEFT">VARCHAR(10)</TD><TD ALIGN="LEFT">NN</TD></TR>
+    <TR><TD ALIGN="LEFT">created_at</TD><TD ALIGN="LEFT">DATETIME</TD><TD ALIGN="LEFT">NN, DEFAULT NOW</TD></TR>
+    <TR><TD COLSPAN="3" ALIGN="LEFT" BGCOLOR="#eef4f6"><FONT POINT-SIZE="10">CHK chk_doctors_fee: consultation_fee &gt;= 0<BR ALIGN="LEFT"/>CHK chk_doctors_full_name / chk_doctors_specialty: length &gt;= 2<BR ALIGN="LEFT"/>CHK chk_doctors_room: CHAR_LENGTH(TRIM(room)) &gt;= 1<BR ALIGN="LEFT"/></FONT></TD></TR>
+  </TABLE>>];
+
+  appointments [label=<
+  <TABLE BORDER="1" CELLBORDER="0" CELLSPACING="0" CELLPADDING="5" COLOR="#33525f">
+    <TR><TD COLSPAN="3" BGCOLOR="#0f6e78"><FONT COLOR="white"><B>appointments</B></FONT></TD></TR>
+    <TR><TD ALIGN="LEFT"><B>id</B></TD><TD ALIGN="LEFT">INT UNSIGNED</TD><TD ALIGN="LEFT"><B>PK</B>, AUTO_INCREMENT</TD></TR>
+    <TR><TD ALIGN="LEFT" PORT="patient_id"><I>patient_id</I></TD><TD ALIGN="LEFT">INT UNSIGNED</TD><TD ALIGN="LEFT"><B>FK</B> → patients.id, NN, ON DELETE RESTRICT</TD></TR>
+    <TR><TD ALIGN="LEFT" PORT="doctor_id"><I>doctor_id</I></TD><TD ALIGN="LEFT">INT UNSIGNED</TD><TD ALIGN="LEFT"><B>FK</B> → doctors.id, NN, ON DELETE RESTRICT</TD></TR>
+    <TR><TD ALIGN="LEFT">appt_datetime</TD><TD ALIGN="LEFT">DATETIME</TD><TD ALIGN="LEFT">NN</TD></TR>
+    <TR><TD ALIGN="LEFT">amount_paid</TD><TD ALIGN="LEFT">DECIMAL(10,2)</TD><TD ALIGN="LEFT">NN (fee snapshot at booking)</TD></TR>
+    <TR><TD ALIGN="LEFT">status</TD><TD ALIGN="LEFT">ENUM('BOOKED','CANCELLED')</TD><TD ALIGN="LEFT">NN, DEFAULT 'BOOKED'</TD></TR>
+    <TR><TD ALIGN="LEFT">booked_on</TD><TD ALIGN="LEFT">DATETIME</TD><TD ALIGN="LEFT">NN, DEFAULT NOW</TD></TR>
+    <TR><TD ALIGN="LEFT">cancelled_at</TD><TD ALIGN="LEFT">DATETIME</TD><TD ALIGN="LEFT">NULL (set on cancellation)</TD></TR>
+    <TR><TD ALIGN="LEFT">refund_amount</TD><TD ALIGN="LEFT">DECIMAL(10,2)</TD><TD ALIGN="LEFT">NULL (set on cancellation)</TD></TR>
+    <TR><TD ALIGN="LEFT">active_slot</TD><TD ALIGN="LEFT">DATETIME</TD><TD ALIGN="LEFT"><B>GEN</B> STORED: appt_datetime if BOOKED, else NULL</TD></TR>
+    <TR><TD COLSPAN="3" ALIGN="LEFT" BGCOLOR="#fff3d6"><FONT POINT-SIZE="11"><B>UQ uq_doctor_active_slot (doctor_id, active_slot)</B><BR ALIGN="LEFT"/>   → a doctor can never hold two appointments at the same date/time<BR ALIGN="LEFT"/>      (cancelled rows have active_slot = NULL, so the slot can be rebooked)<BR ALIGN="LEFT"/><B>UQ uq_patient_active_slot (patient_id, active_slot)</B><BR ALIGN="LEFT"/>   → a patient can never be in two appointments at the same date/time<BR ALIGN="LEFT"/></FONT></TD></TR>
+    <TR><TD COLSPAN="3" ALIGN="LEFT" BGCOLOR="#eef4f6"><FONT POINT-SIZE="10">CHK chk_appt_slot_boundary: MINUTE(appt_datetime) IN (0,30) AND SECOND(appt_datetime) = 0<BR ALIGN="LEFT"/>CHK chk_appt_working_hours: TIME(appt_datetime) BETWEEN '09:00:00' AND '16:30:00'<BR ALIGN="LEFT"/>CHK chk_appt_amount_paid: amount_paid &gt;= 0<BR ALIGN="LEFT"/>CHK chk_appt_cancellation_record: BOOKED ⇒ cancelled_at, refund_amount NULL;<BR ALIGN="LEFT"/>      CANCELLED ⇒ cancelled_at, refund_amount NOT NULL<BR ALIGN="LEFT"/>CHK chk_appt_refund_range: refund_amount BETWEEN 0 AND amount_paid<BR ALIGN="LEFT"/>CHK chk_appt_cancel_before_start: cancelled_at &lt; appt_datetime<BR ALIGN="LEFT"/>INDEX idx_appointments_doctor_datetime (doctor_id, appt_datetime)<BR ALIGN="LEFT"/></FONT></TD></TR>
+  </TABLE>>];
+
+  patients:id:e -> appointments:patient_id:w [dir=both, arrowtail=teetee, arrowhead=crowodot, arrowsize=1.3, taillabel=<<B>1</B>>, headlabel=<<B>0..N</B>>, labeldistance=2.2, label=<<B>1 : N</B>  books>];
+  doctors:id:e -> appointments:doctor_id:w [dir=both, arrowtail=teetee, arrowhead=crowodot, arrowsize=1.3, taillabel=<<B>1</B>>, headlabel=<<B>0..N</B>>, labeldistance=2.2, label=<<B>1 : N</B>  attends>];
+}
