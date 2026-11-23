@@ -18,7 +18,8 @@
     "dotenv": "^16.4.7",
     "express": "^5.1.0",
     "ioredis": "^5.4.2",
-    "mysql2": "^3.12.0"
+    "mysql2": "^3.12.0",
+    "swagger-ui-express": "^5.0.1"
   },
   "devDependencies": {
     "jest": "^29.7.0"

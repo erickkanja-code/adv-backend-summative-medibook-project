@@ -78,6 +78,7 @@ AUDIT_LOG_PATH=logs/audit.log
     ├── queues/      Redis connection, BullMQ producers, waitlist store
     ├── workers/     job processors run by src/worker.js
     ├── middleware/  404 handler and the central error handler
+    ├── docs/        openapi.js (OpenAPI 3 spec served by Swagger UI at /api-docs)
     ├── i18n/, views/ feedback page translation and HTML
     ├── utils/       AppError, audit logger (fs), refund calculator, date helpers
     ├── app.js       Express app
@@ -88,6 +89,8 @@ AUDIT_LOG_PATH=logs/audit.log
 `services/` is an addition to models/controllers/routes: booking rules are needed by both the HTTP controller and the waitlist worker, so they live in one place instead of being duplicated. Services never contain SQL; they call model functions.
 
 ## API
+
+**Interactive docs:** with the app running, open **http://localhost:3000/api-docs** (Swagger UI). Every endpoint is listed with its request schema, a ready-to-run example and the possible error responses; use *Try it out* → *Execute* to call the live API. The raw OpenAPI 3 document is at `/api-docs.json` (it can be imported into Postman). The spec lives in `src/docs/openapi.js`.
 
 All request and response bodies are JSON. Date/times are clinic-local and written `YYYY-MM-DD HH:mm`.
 
@@ -111,6 +114,7 @@ All request and response bodies are JSON. Date/times are clinic-local and writte
 | GET | `/api/reports/doctors` | 200 | every doctor's totals and revenue |
 | GET | `/api/reports/busy-days` | 200 | doctor-days more than 80% booked |
 | GET | `/feedback?lang=fr` | 200 | course feedback page (en default, fr) |
+| GET | `/api-docs` | 200 | Swagger UI (interactive API docs) |
 
 Errors always have the shape `{ "error": { "status", "code", "message", "details?" } }`:
 400 malformed input (with a `details` list per field) · 404 unknown id or route · 409 conflict with current state (slot taken, day full, duplicate email, already cancelled, record still referenced) · 422 well-formed but breaks a business rule (past slot, outside hours, off-boundary, cannot cancel a past appointment, joining a waitlist for a free slot) · 503 MySQL/Redis unavailable.
