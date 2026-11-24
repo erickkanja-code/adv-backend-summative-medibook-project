@@ -1,5 +1,12 @@
 # MediBook — clinic appointment booking backend
 
+## Demo video
+
+[Watch the MediBook demo (10 min)](https://youtu.be/vwfX8G3Ag3I)
+
+Shows patient/doctor CRUD, booking rules, simultaneous-booking protection, cancellation with refund, waitlist promotion by the worker, reports, the feedback page in English and French, and the unit tests.
+
+
 Express 5 · MySQL 8 · Redis (BullMQ) · Jest. No ORM; all SQL lives in `src/models` and uses `?` placeholders.
 
 ## Requirements
